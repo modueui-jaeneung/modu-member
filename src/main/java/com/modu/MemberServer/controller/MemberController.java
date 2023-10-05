@@ -24,6 +24,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class MemberController {
 
+    // zz
     private final MemberService memberService;
 
     // 회원가입 -> 성공 시 201
