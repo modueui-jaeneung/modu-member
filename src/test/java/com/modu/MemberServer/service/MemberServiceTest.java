@@ -23,7 +23,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
-@ActiveProfiles("local-mariadb")
+@ActiveProfiles("local-h2")
 @Slf4j
 public class MemberServiceTest {
 

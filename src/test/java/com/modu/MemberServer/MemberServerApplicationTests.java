@@ -5,7 +5,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
-@ActiveProfiles("local-mariadb")
+@ActiveProfiles("local-h2")
 class MemberServerApplicationTests {
 
 	@Test
