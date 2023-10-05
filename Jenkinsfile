@@ -61,6 +61,7 @@ pipeline {
         stage('Push to ECR') {
             steps {
                 sh """
+                    aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin ${ECR_PATH}
                     docker push ${ECR_PATH}/${ECR_IMAGE}:${BUILD_NUMBER}
                     docker push ${ECR_PATH}/${ECR_IMAGE}:latest
                 """
