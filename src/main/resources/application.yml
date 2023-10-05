@@ -1,0 +1,122 @@
+spring:
+  profiles:
+    active: local-h2
+
+---
+# local (h2)
+
+server:
+  port: 8083
+
+spring:
+  config:
+    activate:
+      on-profile: local-h2
+
+  datasource:
+    url: jdbc:h2:tcp://localhost/~/modu_prj
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+
+  jpa:
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
+    hibernate:
+      ddl-auto: create
+
+logging:
+  level:
+    org.hibernate.sql: debug
+
+---
+# local (mariadb docker)
+
+server:
+  port: 8083
+
+spring:
+  config:
+    activate:
+      on-profile: local-mariadb
+
+  datasource:
+    url: jdbc:mariadb://localhost:3306/modu?characterEncoding=UTF-8
+    username: root
+    password: pass
+    driver-class-name: org.mariadb.jdbc.Driver
+
+  jpa:
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
+    hibernate:
+      ddl-auto: create
+
+
+logging:
+  level:
+    org.hibernate.sql: debug
+
+---
+# demo (혼자 해보는 AWS ec2 ~ RDS mariadb 연동)
+
+server:
+  port: 8080
+
+spring:
+  config:
+    activate:
+      on-profile: rds-mariadb-test
+
+  datasource:
+    url: jdbc:mariadb://modu-rds.c4p22vrgxfxf.ap-northeast-2.rds.amazonaws.com:3306/modu?characterEncoding=UTF-8
+    username: admin
+    password: dhsmfskfTlwhgspdy!
+    driver-class-name: org.mariadb.jdbc.Driver
+
+  jpa:
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
+    hibernate:
+      ddl-auto: none
+
+
+logging:
+  level:
+    org.hibernate.sql: debug
+
+---
+# prod (배포)
+
+server:
+  port: 8006
+
+spring:
+  config:
+    activate:
+      on-profile: prod
+
+  datasource:
+    url: ${RDS_URL}
+    username: ${RDS_USERNAME}
+    password: ${RDS_PASSWORD}
+    driver-class-name: org.mariadb.jdbc.Driver
+
+  jpa:
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
+    hibernate:
+      ddl-auto: none
+
+
+logging:
+  level:
+    org.hibernate.sql: WARN
