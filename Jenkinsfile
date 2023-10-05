@@ -27,7 +27,7 @@ pipeline {
 
         stage('Build') {
             steps {
-                sh 'sudo ./gradlew clean build'
+                sh './gradlew clean build'
                 sh 'ls -al ./build/libs'
             }
             post {
@@ -43,8 +43,8 @@ pipeline {
         stage('Docker build') {
             steps {
                 sh """
-                    sudo docker build -t ${ECR_PATH}/${ECR_IMAGE}:${BUILD_NUMBER} -f Dockerfile .
-                    sudo docker tag ${ECR_PATH}/${ECR_IMAGE}:${BUILD_NUMBER} ${ECR_PATH}/${ECR_IMAGE}:latest
+                    docker build -t ${ECR_PATH}/${ECR_IMAGE}:${BUILD_NUMBER} -f Dockerfile .
+                    docker tag ${ECR_PATH}/${ECR_IMAGE}:${BUILD_NUMBER} ${ECR_PATH}/${ECR_IMAGE}:latest
                 """
             }
 
@@ -61,8 +61,8 @@ pipeline {
         stage('Push to ECR') {
             steps {
                 sh """
-                    sudo docker push ${ECR_PATH}/${ECR_IMAGE}:${BUILD_NUMBER}
-                    sudo docker push ${ECR_PATH}/${ECR_IMAGE}:latest
+                    docker push ${ECR_PATH}/${ECR_IMAGE}:${BUILD_NUMBER}
+                    docker push ${ECR_PATH}/${ECR_IMAGE}:latest
                 """
             }
         }
