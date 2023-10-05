@@ -53,7 +53,7 @@ pipeline {
                     echo 'success dockerizing project'
                 }
                 failure {
-                    error 'fail dockerizing project'
+                    error 'fail dockerizing project' // zzzz
                 }
             }
         }
