@@ -6,4 +6,4 @@ COPY $JAR_FILE_PATH MemberServer-0.0.1-SNAPSHOT.jar
 
 EXPOSE 8080
 
-ENTRYPOINT ["java", "-jar", "MemberServer-0.0.1-SNAPSHOT.jar"]
+ENTRYPOINT ["java", "-jar", "MemberServer-0.0.1-SNAPSHOT.jar", "-Dspring.config.activate.on-profile", "prod"]
