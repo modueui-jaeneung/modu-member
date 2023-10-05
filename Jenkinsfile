@@ -15,13 +15,13 @@ pipeline {
                 credentialsId: 'github_access_token',
                 url: 'https://github.com/modueui-jaeneung/modu-member.git'
             }
-        }
-        post {
-            success {
-                sh 'echo Successfully Cloned Git Repository'
-            }
-            failure {
-                sh 'echo Failed Cloned Git Repository'
+            post {
+                success {
+                    sh 'echo Successfully Cloned Git Repository'
+                }
+                failure {
+                    sh 'echo Failed Cloned Git Repository'
+                }
             }
         }
 
