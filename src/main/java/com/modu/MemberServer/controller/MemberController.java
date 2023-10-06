@@ -20,7 +20,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 
-@RestController("/member")
+@RestController
+@RequestMapping("/member")
 @RequiredArgsConstructor
 public class MemberController {
 
