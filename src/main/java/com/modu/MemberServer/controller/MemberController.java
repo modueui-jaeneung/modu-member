@@ -24,12 +24,11 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class MemberController {
 
-    // zz
     private final MemberService memberService;
 
     // 회원가입 -> 성공 시 201
     @PostMapping("/members")
-    public ResponseEntity<Message> signup(@ModelAttribute SignUpDto signUpDto) {
+    public ResponseEntity<Message> signup(@RequestBody SignUpDto signUpDto) {
         Long memberId = memberService.signupLocal(signUpDto);
         return new ResponseEntity<>(new Message(memberId.toString()), HttpStatus.CREATED);
     }
@@ -45,7 +44,7 @@ public class MemberController {
     // memberService에서 회원을 조회했는데 0건이 나온다면 NoSuchElementException 예외 던짐.
     // 컨트롤러가 받아서 400 으로 응답함
     @GetMapping("/members/id")
-    public ResponseEntity<LoginResponseDto> findMemberIdForLogin(@ModelAttribute LoginRequestDto loginDto) {
+    public ResponseEntity<LoginResponseDto> findMemberIdForLogin(@RequestBody LoginRequestDto loginDto) {
         SocialType socialType = SocialType.valueOf(loginDto.getSocialType());
         Member member = memberService.findByEmailAndSocialType(loginDto.getEmail(), socialType);
 
