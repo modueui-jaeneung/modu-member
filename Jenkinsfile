@@ -2,9 +2,12 @@ pipeline {
     agent any
 
     environment {
-        REGION = 'ap-northeast-2'
+        gitEmail = 'dlrbcnvk@gmail.com'
+        gitName = 'dlrbcnvk'
+        dockerImage = ''
+        dockerImageRegistry = ''
         ECR_PATH = credentials('ecr-path')
-        ECR_IMAGE = 'modu-member'
+        ECR_REPOSITORY = 'modu-member'
         AWS_CREDENTIAL_ID = 'build-test_ecr'
     }
 
@@ -12,60 +15,100 @@ pipeline {
         stage('Checkout') {
             steps {
                 git branch: 'main',
-                credentialsId: 'github_access_token',
-                url: 'https://github.com/modueui-jaeneung/modu-member.git'
+                        credentialsId: 'github_access_token',
+                        url: 'https://github.com/modueui-jaeneung/modu-member.git'
             }
             post {
                 success {
-                    sh 'echo Successfully Cloned Git Repository'
+                    sh 'echo "Successfully Cloned Repository"'
                 }
                 failure {
-                    sh 'echo Failed Cloned Git Repository'
+                    sh 'echo "Fail Cloned Repository"'
                 }
             }
         }
 
         stage('Build') {
             steps {
-                sh './gradlew clean build -x test'
-                sh 'ls -al ./build/libs'
+                dir('.') {
+                    sh """
+                    ./gradlew clean build -x test
+                    """
+                }
             }
             post {
                 success {
-                    echo 'gradle build success'
+                    sh 'echo "gradle build success"'
                 }
                 failure {
-                    echo 'gradle build failed'
+                    sh 'echo "gradle build fail"'
                 }
             }
         }
 
-        stage('Docker build') {
+        stage('Build docker image') {
             steps {
-                sh """
-                    docker build -t ${ECR_PATH}/${ECR_IMAGE}:${BUILD_NUMBER} -f Dockerfile .
-                    docker tag ${ECR_PATH}/${ECR_IMAGE}:${BUILD_NUMBER} ${ECR_PATH}/${ECR_IMAGE}:latest
-                """
-            }
-
-            post {
-                success {
-                    echo 'success dockerizing project'
+                script {
+                    dockerImageRegistry = "${ECR_PATH}/${ECR_REPOSITORY}"
+                    dockerImage = docker.build dockerImageRegistry + ":1.$BUILD_NUMBER"
                 }
+            }
+            post {
                 failure {
-                    error 'fail dockerizing project' // zzzz
+                    sh 'echo "Bulid Docker Fail"'
                 }
             }
         }
 
         stage('Push to ECR') {
             steps {
-                sh """
-                    aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin ${ECR_PATH}
-                    docker push ${ECR_PATH}/${ECR_IMAGE}:${BUILD_NUMBER}
-                    docker push ${ECR_PATH}/${ECR_IMAGE}:latest
-                """
+                script {
+                    docker.withRegistry("https://${ECR_PATH}", "ecr:ap-northeast-2:" + AWS_CREDENTIAL_ID) {
+                        dockerImage.push()
+                    }
+                }
+            }
+            post {
+                success {
+                    sh "docker rmi $dockerImageRegistry:1.$BUILD_NUMBER"
+                }
+                failure {
+                    error 'Docker Image Push Fail'
+                }
             }
         }
+
+        stage('update manifest registry') {
+            steps {
+                script {
+                    // Clone the Helm chart repo
+                    git branch: 'main',
+                            credentialsId: 'github_access_token_hugo',
+                            url: 'https://github.com/modueui-jaeneung/kubernetes-manifest.git'
+
+                    // Update the Docker image tag in the values.yaml file
+                    sh """
+                        git config --global user.email ${gitEmail}
+                        git config --global user.name ${gitName}
+                        ECR_REGISTRY="${ECR_PATH}/${ECR_REPOSITORY}"
+                        sed -i 's/$ECR_REPOSITORY:1.*\$/$ECR_REPOSITORY:1.$BUILD_NUMBER/g' chat-deployment.yaml
+                        git add chat-deployment.yaml
+                        git commit -m "Update Docker image tag for 1.$BUILD_NUMBER version"
+                    """
+                }
+            }
+            post {
+                success {
+                    withCredentials([gitUsernamePassword(credentialsId: 'github_access_token_hugo', gitToolName: 'Default')]) {
+                        sh "git push -u origin main"
+                    }
+                }
+                failure {
+                    sh 'echo "Fail update manifest"'
+                }
+            }
+        }
+
+
     }
 }
