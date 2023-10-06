@@ -95,7 +95,7 @@ logging:
 # prod (배포)
 
 server:
-  port: 8006
+  port: 8086
 
 spring:
   config:
