@@ -91,8 +91,8 @@ pipeline {
                         git config --global user.email ${gitEmail}
                         git config --global user.name ${gitName}
                         ECR_REGISTRY="${ECR_PATH}/${ECR_REPOSITORY}"
-                        sed -i 's/$ECR_REPOSITORY:1.*\$/$ECR_REPOSITORY:1.$BUILD_NUMBER/g' chat-deployment.yaml
-                        git add chat-deployment.yaml
+                        sed -i 's/$ECR_REPOSITORY:1.*\$/$ECR_REPOSITORY:1.$BUILD_NUMBER/g' member-deployment.yaml
+                        git add member-deployment.yaml
                         git commit -m "Update Docker image tag for 1.$BUILD_NUMBER version"
                     """
                 }
