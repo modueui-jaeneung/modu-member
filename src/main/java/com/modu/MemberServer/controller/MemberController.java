@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/member")
+//@RequestMapping("/member")
 @RequiredArgsConstructor
 public class MemberController {
 
@@ -45,7 +45,7 @@ public class MemberController {
     // memberService에서 회원을 조회했는데 0건이 나온다면 NoSuchElementException 예외 던짐.
     // 컨트롤러가 받아서 400 으로 응답함
     @GetMapping("/members/id")
-    public ResponseEntity<LoginResponseDto> findMemberIdForLogin(@RequestBody LoginRequestDto loginDto) {
+    public ResponseEntity<LoginResponseDto> findMemberIdForLogin(@ModelAttribute LoginRequestDto loginDto) {
         SocialType socialType = SocialType.valueOf(loginDto.getSocialType());
         Member member = memberService.findByEmailAndSocialType(loginDto.getEmail(), socialType);
 
