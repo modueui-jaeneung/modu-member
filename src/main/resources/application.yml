@@ -103,7 +103,7 @@ spring:
       on-profile: prod
 
   datasource:
-    url: ${RDS_URL}
+    url: ${RDS_MEMBER_URL}
     username: ${RDS_USERNAME}
     password: ${RDS_PASSWORD}
     driver-class-name: org.mariadb.jdbc.Driver
