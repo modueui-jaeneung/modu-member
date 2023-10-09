@@ -28,6 +28,7 @@ public class MemberController {
     private final MemberService memberService;
 
     // 회원가입 -> 성공 시 201
+    // zz
     @PostMapping("/members")
     public ResponseEntity<Message> signup(@RequestBody SignUpDto signUpDto) {
         Long memberId = memberService.signupLocal(signUpDto);
