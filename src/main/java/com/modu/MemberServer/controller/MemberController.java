@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/member")
 @RequiredArgsConstructor
 public class MemberController {
 
