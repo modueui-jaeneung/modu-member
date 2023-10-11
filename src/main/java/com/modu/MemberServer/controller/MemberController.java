@@ -13,6 +13,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +23,7 @@ import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
+@Slf4j
 public class MemberController {
 
     private final MemberService memberService;
@@ -30,6 +32,7 @@ public class MemberController {
     // zz
     @PostMapping("/members")
     public ResponseEntity<Message> signup(@RequestBody SignUpDto signUpDto) {
+        log.info("POST /members signUpDto={}", signUpDto);
         Long memberId = memberService.signupLocal(signUpDto);
         return new ResponseEntity<>(new Message(memberId.toString()), HttpStatus.CREATED);
     }
